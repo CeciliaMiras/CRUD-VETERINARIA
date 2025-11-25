@@ -1,4 +1,3 @@
-
 package com.mycompany.veterinaria.logica;
 
 import java.io.Serializable;
@@ -6,41 +5,33 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Mascota implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+  
     private int num_cliente;
+
     private String nombre;
     private String especie;
     private String raza;
-    private String sexo;
+    private String sexo;        // "M" o "F"
     private int edad;
-    private String alergias;
-    private String vacunas;
+    private String alergias;    // "SI" o "NO"
+    private String vacunas;     // "SI" o "NO"
     private String observaciones;
-    @OneToOne
+
+    @ManyToOne
     private Dueno un_duenio;
 
+    // Constructor vacío (OBLIGATORIO para JPA)
     public Mascota() {
     }
 
-    public Mascota(int num_cliente, String nombre, String especie, String raza, String sexo, int edad, String alergias, String vacunas, String observaciones, Dueno un_duenio) {
-        this.num_cliente = num_cliente;
-        this.nombre = nombre;
-        this.especie = especie;
-        this.raza = raza;
-        this.sexo = sexo;
-        this.edad = edad;
-        this.alergias = alergias;
-        this.vacunas = vacunas;
-        this.observaciones = observaciones;
-        this.un_duenio = un_duenio;
-    }
-
+    // Getters y setters
     public int getNum_cliente() {
         return num_cliente;
     }
@@ -78,7 +69,17 @@ public class Mascota implements Serializable {
     }
 
     public void setSexo(String sexo) {
-        this.sexo = sexo;
+        // Aseguramos que solo quede "M" o "F"
+        if (sexo != null) {
+            sexo = sexo.trim().toUpperCase();
+            if (sexo.equals("M") || sexo.equals("F")) {
+                this.sexo = sexo;
+            } else {
+                this.sexo = "M"; // Valor por defecto si viene mal
+            }
+        } else {
+            this.sexo = "M";
+        }
     }
 
     public int getEdad() {
@@ -94,7 +95,13 @@ public class Mascota implements Serializable {
     }
 
     public void setAlergias(String alergias) {
-        this.alergias = alergias;
+        // Solo "SI" o "NO"
+        if (alergias != null) {
+            alergias = alergias.trim().toUpperCase();
+            this.alergias = alergias.equals("SI") ? "SI" : "NO";
+        } else {
+            this.alergias = "NO";
+        }
     }
 
     public String getVacunas() {
@@ -102,7 +109,13 @@ public class Mascota implements Serializable {
     }
 
     public void setVacunas(String vacunas) {
-        this.vacunas = vacunas;
+        // Solo "SI" o "NO"
+        if (vacunas != null) {
+            vacunas = vacunas.trim().toUpperCase();
+            this.vacunas = vacunas.equals("SI") ? "SI" : "NO";
+        } else {
+            this.vacunas = "NO";
+        }
     }
 
     public String getObservaciones() {
@@ -120,10 +133,5 @@ public class Mascota implements Serializable {
     public void setUn_duenio(Dueno un_duenio) {
         this.un_duenio = un_duenio;
     }
-
-    @Override
-    public String toString() {
-        return "Mascota{" + "num_cliente=" + num_cliente + ", nombre=" + nombre + ", especie=" + especie + ", raza=" + raza + ", sexo=" + sexo + ", edad=" + edad + ", alergias=" + alergias + ", vacunas=" + vacunas + ", observaciones=" + observaciones + ", un_duenio=" + un_duenio + '}';
-    }
-    
 }
+

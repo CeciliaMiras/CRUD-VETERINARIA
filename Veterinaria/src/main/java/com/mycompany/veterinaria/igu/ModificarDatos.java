@@ -2,16 +2,22 @@
 package com.mycompany.veterinaria.igu;
 
 import com.mycompany.veterinaria.logica.Controladora;
+import com.mycompany.veterinaria.logica.Mascota;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 
-public class CargaDatos extends javax.swing.JFrame {
+public class ModificarDatos extends javax.swing.JFrame {
    
-Controladora control=new Controladora();
+Controladora control=null;
+int num_cliente;
+Mascota masco;
 
-    public CargaDatos() {
+    public ModificarDatos(int num_cliente) {
+        control=new Controladora();
+       // this.num_cliente=num_cliente;
         initComponents();
+        CargaDatos(num_cliente);
     }
 
    
@@ -54,7 +60,7 @@ Controladora control=new Controladora();
         jLabel1.setBackground(new java.awt.Color(51, 51, 255));
         jLabel1.setFont(new java.awt.Font("Segoe Print", 1, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 51, 204));
-        jLabel1.setText("Carga de Datos");
+        jLabel1.setText("Modificar Datos");
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -128,7 +134,7 @@ Controladora control=new Controladora();
         btnGuardar.setFont(new java.awt.Font("Segoe Print", 1, 18)); // NOI18N
         btnGuardar.setForeground(new java.awt.Color(255, 51, 204));
         btnGuardar.setIcon(new javax.swing.ImageIcon("C:\\Users\\miras\\OneDrive\\Escritorio\\VETERINARIA-CRUD\\Imagenes\\descargar1.png")); // NOI18N
-        btnGuardar.setText("GUARDAR");
+        btnGuardar.setText("Guardar Cambios");
         btnGuardar.setBorder(null);
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -320,25 +326,33 @@ Controladora control=new Controladora();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-      String nombreMasco=txtNombre.getText();
+      
+        //modificar datos de mascota
+        String nombreMasco=txtNombre.getText();
       String especie=txtEspecie.getText();
       String raza=txtRaza.getText();
       String sexo=(String)cmbSexo.getSelectedItem();
       int edad = Integer.parseInt(txtEdad.getText());
       String alergias=(String)cmbAlergico.getSelectedItem();
       String vacunas=(String)cmbVacunas.getSelectedItem();
+      //modificar datos del duño
       String nombreDuenio=txtNombreDueño.getText();
       String celularDuenio=txtCelular.getText();
       String observaciones=txtObservaciones.getText();
-      control.guardar(nombreMasco,especie,raza,sexo,edad,alergias,vacunas,nombreDuenio,celularDuenio,observaciones);
-      //cartel para guardar con exito
-      JOptionPane optionPane=new JOptionPane("Guardado Exitosamente");
-      optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
-      JDialog dialog=optionPane.createDialog("Guardado Exitosamente");
-      dialog.setAlwaysOnTop(true);
-       dialog.setVisible(true);
+     control.modificarMascota(masco, nombreMasco, especie, raza, sexo, edad, alergias, vacunas, nombreDuenio, celularDuenio, observaciones);
+     //mensaje que todo salio ok
+        mostrarMensaje("Edicion Realizada correctamente", "Info", "Edicion Correcta");
+         VerDatos pantalla=new VerDatos();
+          pantalla.setVisible(true);
+        pantalla.setLocationRelativeTo(null);
+        this.dispose();
+      
      
-
+        
+        
+        
+        
+        
      
       
       
@@ -375,4 +389,57 @@ Controladora control=new Controladora();
     private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtRaza;
     // End of variables declaration//GEN-END:variables
+
+    private void CargaDatos(int num_cliente) {
+       this.masco=control.traerMascota(num_cliente);
+         txtNombre.setText(masco.getNombre());
+       txtEspecie.setText(masco.getEspecie());
+       txtRaza.setText(masco.getRaza());
+        if(masco.getSexo().equals("F")){
+           cmbSexo.setSelectedIndex(1);
+       }else{
+          if(masco.getSexo().equals("M")){
+           cmbSexo.setSelectedIndex(2);
+          }
+       }
+       txtEdad.setText(String.valueOf(masco.getEdad()));
+       //ALERGIA
+       
+       if(masco.getAlergias() .equals("SI")){
+           cmbAlergico.setSelectedIndex(1);
+       }else{
+          if(masco.getAlergias().equals("NO")){
+           cmbAlergico.setSelectedIndex(2);
+          }
+       }
+       
+       
+        if(masco.getVacunas().equals("SI")){
+           cmbVacunas.setSelectedIndex(1);
+       }else{
+          if(masco.getVacunas().equals("NO")){
+           cmbVacunas.setSelectedIndex(2);
+          }
+       }
+       
+       
+     
+       txtNombreDueño.setText(masco.getUn_duenio().getNombre());
+       txtCelular.setText(masco.getUn_duenio().getCelDuenio());
+       txtObservaciones.setText(masco.getObservaciones());
+    }
+    private void mostrarMensaje(String memsaje, String titulo, String tipo) {
+        JOptionPane optionPane=new JOptionPane(memsaje);
+        if(tipo.equals("Info")){
+            optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+        }else if(tipo.equals("Error")){
+            optionPane.setMessageType(JOptionPane.ERROR);
+        }
+        
+        JDialog dialog=optionPane.createDialog(titulo);
+        dialog.setAlwaysOnTop(true);
+        dialog.setVisible(true);
+
+        
+    }
 }
